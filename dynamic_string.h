@@ -2,7 +2,7 @@
 #define __DYNAMIC_STRING_H_
 
 #include <cstddef> //size_t
-#include <initializer_list> // initializer constructor
+#include <iostream>
 
 class DynamicString
 {
@@ -12,7 +12,6 @@ public:
 	DynamicString(const char* init_str_ptr, size_t n);
 	DynamicString(DynamicString& init_str_ptr); // Copy constructor
 	DynamicString(DynamicString&& init_str_ptr); // Move constructor
-	//DynamicString(initializer_list<char> il);
 
 	~DynamicString();
 
@@ -21,16 +20,16 @@ public:
 	char operator[](size_t i) const;
 
 	DynamicString& operator=(const DynamicString& str2);
-	DynamicString& operator=(const DynamicString&& str2); // Move assignment
+	//DynamicString& operator=(const DynamicString&& str2); // Move assignment
 	DynamicString& operator=(const char* str2);
 
 	DynamicString operator+(const DynamicString& str2);
-	//DynamicString operator+(const char* str1, const char* str2);
+	DynamicString operator+(const char* str2);
 
 	DynamicString& operator+=(const DynamicString& str2);
 	DynamicString& operator+=(const char* str2);
 
-
+	friend std::ostream& operator<< (std::ostream& os, const DynamicString& str);
 
 	
 

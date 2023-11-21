@@ -96,7 +96,7 @@ void DynamicString::shrink_to_fit(){ resize(len);}
 // Double the capuntil enough to fit n
 void DynamicString::resize_to_fit(size_t n){
 	if(n > max_cap) throw std::length_error("Maximum capacity exceeded.");
-	size_t new_cap = (cap== 0) ? 1 : cap;
+	size_t new_cap = (cap == 0) ? 1 : cap;
 	while(new_cap < n) new_cap*= 2;
 	if(new_cap > max_cap) new_cap = max_cap;
  	resize(new_cap);
@@ -133,7 +133,7 @@ DynamicString& DynamicString::operator=(const char* str2){
 	while(str2[length2] != '\x00') length2++;
 	
 	// +1 to include terminator
-	resize_to_fit(length2);
+	resize_to_fit(length2+1);
 	copy_n(str2, length2+1);
 	len = length2;
 	return *this;
@@ -142,15 +142,38 @@ DynamicString& DynamicString::operator=(const char* str2){
 
 // Concatination operators
 DynamicString DynamicString::operator+(const DynamicString& str2){
+	size_t length2 = str2.length();
+
+	DynamicString res(*this);
+	res.resize_to_fit(len + length2);
+	res.len = len + length2;
+
+	for (size_t i = 0; i < length2; i++){
+		res[len+i] = str2[i];
+	}
+
+
+	return res;
+}
+
+// C strings concatination
+DynamicString DynamicString::operator+(const char* str2){
+	size_t length2 = 0;
+
+	// Find the terminator
+	while(str2[length2] != '\x00') length2++;
+
 	DynamicString res;
-	res.resize_to_fit(len + str2.length());
+	res.resize_to_fit(len +length2);
+	res.len = len + length2;
+
+
 	for(size_t i = 0; i<len; i++){
 		res[i] = str_ptr[i];
 	}
-	for (size_t i = 0; i < str2.length(); i++){
+	for (size_t i = 0; i < length2; i++){
 		res[len+i] = str2[i];
 	}
-	len += str2.length();
 	return res;
 }
 
@@ -162,32 +185,6 @@ DynamicString& DynamicString::operator+=(const DynamicString& str2){
 	len += str2.length();
 	return *this;
 }
-
-//C strings concatination
-// DynamicString DynamicString::operator+(const char* str1, const char* str2){
-// 	size_t length1 = 0;
-// 	size_t length2 = 0;
-
-// 	// Find the terminator
-// 	while(str1[length1] != '\x00') length1++;
-// 	while(str2[length2] != '\x00') length2++;
-// 	// Terminator is not included
-// 	
-// 	
-
-// 	DynamicString res = new DynamicString();
-
-// 	res.resize_to_fit(length1 + length2);
-
-// 	for(size_t i = 0; i<length1; i++){
-// 		res[i] = str1[i];
-// 	}
-// 	for (size_t i = 0; i < length2; i++){
-// 		res[length1+i+1] = str2[i];
-// 	}
-
-// 	return res;
-// }
 
 DynamicString& DynamicString::operator+=(const char* str2){
 	size_t length2 = 0;
@@ -201,4 +198,11 @@ DynamicString& DynamicString::operator+=(const char* str2){
 	}
 	len += length2;
 	return *this;
+}
+
+
+// Stream operators
+std::ostream& operator<< (std::ostream& os, const DynamicString& str){
+	os << str.str_ptr;
+	return os;
 }
