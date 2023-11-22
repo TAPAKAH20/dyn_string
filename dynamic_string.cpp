@@ -1,6 +1,7 @@
 #include "dynamic_string.h"
 
 #include <cstddef>			// size_t
+#include <cctype>			// tolower
 #include <stdexcept>		//range and len errors
 
 // Constructors
@@ -109,12 +110,21 @@ void DynamicString::resize_to_fit(size_t n){
 
 // Return is negative if this string is earlier in the lexicographical order
 // and 0 if both are equal
-int DynamicString::compare(const DynamicString& str2) const{
-	for(size_t i = 0; i < len && i < str2.length(); i++)
-		if(str_ptr[i] - str2[i] != 0)
-			return str_ptr[i] - str2[i];
-	return len - str2.length();
+int DynamicString::compare(const DynamicString& str2, bool ignore_case = false) const{
+	if(!ignore_case){
+		for(size_t i = 0; i < len && i < str2.length(); i++)
+			if(str_ptr[i] - str2[i] != 0)
+				return str_ptr[i] - str2[i];
+		return len - str2.length();
+	}else{
+		for(size_t i = 0; i < len && i < str2.length(); i++)
+			if(std::tolower(str_ptr[i]) - std::tolower(str2[i]) != 0){
+				return std::tolower(str_ptr[i]) - std::tolower(str2[i]);
+			}
+		return len - str2.length();
+	}
 }
+
 
 
 // Operator overloads

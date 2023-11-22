@@ -45,7 +45,7 @@ public:
 
 	size_t find(char c) const;
 	DynamicString substr(size_t from, size_t n) const;
-	int compare(const DynamicString& str2) const;
+	int compare(const DynamicString& str2, bool ignore_case = false) const;
 
 	const char* string() const;
 
