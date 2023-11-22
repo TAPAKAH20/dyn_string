@@ -230,6 +230,12 @@ DynamicString& DynamicString::operator+=(const char* str2){
 	len += length2;
 	return *this;
 }
+DynamicString& DynamicString::operator+=(const char c){
+	resize_to_fit(len + 1);
+	str_ptr[len] = c;
+	len ++;
+	return *this;
+}
 
 
 // Stream operators

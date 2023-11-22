@@ -28,6 +28,8 @@ public:
 
 	DynamicString& operator+=(const DynamicString& str2);
 	DynamicString& operator+=(const char* str2);
+	DynamicString& operator+=(const char c);
+
 
 	friend std::ostream& operator<< (std::ostream& os, const DynamicString& str);
 
