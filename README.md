@@ -1,5 +1,5 @@
 # dyn_string
-Dynamic string implementation. Test task.
+Dynamic string implementation. Test task. 
 Компиляция и запуск были произведены в WSL.
 
 ## Built using
@@ -7,7 +7,7 @@ Dynamic string implementation. Test task.
 g++  *.cpp -o a.out
 ./a.out
 ```
-### Ввод строик из коммандной строки
+### Ввод строк из коммандной строки
 ![image](https://github.com/TAPAKAH20/dyn_string/assets/24612435/c92e894b-8ba3-4d74-b99a-7008ef2a91c3)
 
 
