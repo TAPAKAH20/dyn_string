@@ -11,10 +11,10 @@ int main(int argc, char const *argv[]){
 	
 	std::array<DynamicString*, 10> str_arr;
 
-
+	/*// Randomised strings
 	std::random_device rdChar;  // a seed source for the random number engine
     std::mt19937 charGen(rdChar()); // mersenne_twister_engine seeded with rd()
-    std::uniform_int_distribution<> charDistrib(48, 122); //random printable ascii cahracter
+    std::uniform_int_distribution<> charDistrib(97, 122); //random printable ascii cahracter
 
     std::random_device rdLen;  // a seed source for the random number engine
     std::mt19937 lenGen(rdLen()); // mersenne_twister_engine seeded with rd()
@@ -35,6 +35,15 @@ int main(int argc, char const *argv[]){
     for(int i=0; i<10; i++){
     	std::cout << *str_arr[i] << std::endl;
     }
+	*/
+
+	// User input
+	std::cout << "Введите 10 строк" << std::endl;
+	char strin[255];
+	for(int i=0; i<10; i++){
+		std::cin >> strin;
+		str_arr[i] = new DynamicString(strin);
+	}
 
     // sort using case insensetive compare
     std::sort(str_arr.begin(), str_arr.end(), 
