@@ -123,14 +123,16 @@ void DynamicString::clear(){
 int DynamicString::compare(const DynamicString& str2, bool ignore_case /*=false*/) const{
 	if(!ignore_case){
 		for(size_t i = 0; i < len && i < str2.length(); i++)
-			if(str_ptr[i] - str2[i] != 0)
+			if(str_ptr[i] - str2[i] != 0){
 				return str_ptr[i] - str2[i];
+			}
 		return len - str2.length();
 	}else{
 		for(size_t i = 0; i < len && i < str2.length(); i++)
 			if(std::tolower(str_ptr[i]) - std::tolower(str2[i]) != 0){
 				return std::tolower(str_ptr[i]) - std::tolower(str2[i]);
 			}
+			
 		return len - str2.length();
 	}
 }
