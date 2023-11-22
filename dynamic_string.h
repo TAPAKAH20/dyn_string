@@ -20,7 +20,7 @@ public:
 	char operator[](size_t i) const;
 
 	DynamicString& operator=(const DynamicString& str2);
-	//DynamicString& operator=(const DynamicString&& str2); // Move assignment
+	DynamicString& operator=(const DynamicString&& str2); // Move assignment
 	DynamicString& operator=(const char* str2);
 
 	DynamicString operator+(const DynamicString& str2);
