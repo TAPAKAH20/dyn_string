@@ -65,14 +65,18 @@ void DynamicString::copy_n(const char* str2, size_t n){
 	for(size_t i = 0; i<n; i++)
 		str_ptr[i] = str2[i];
 }
+
 size_t DynamicString::find(char c) const{
 	for(size_t i=0; i<len; i++)
 		if (str_ptr[i] == c) return i;
 	return -1;
 }
+
+bool DynamicString::empty() const{		return len==0;}
 size_t DynamicString::length() const{ 	return len; }
 size_t DynamicString::capacity() const{	return cap; }
 const char* DynamicString::string() const{return str_ptr; }
+
 char& DynamicString::at(size_t i){
 	if(i < len){
 		return str_ptr[i];
@@ -108,9 +112,15 @@ void DynamicString::resize_to_fit(size_t n){
  	resize(new_cap);
 }
 
+void DynamicString::clear(){
+	delete str_ptr;
+	len = 0;
+	cap = 0;
+}
+
 // Return is negative if this string is earlier in the lexicographical order
 // and 0 if both are equal
-int DynamicString::compare(const DynamicString& str2, bool ignore_case = false) const{
+int DynamicString::compare(const DynamicString& str2, bool ignore_case /*=false*/) const{
 	if(!ignore_case){
 		for(size_t i = 0; i < len && i < str2.length(); i++)
 			if(str_ptr[i] - str2[i] != 0)
@@ -142,7 +152,7 @@ DynamicString& DynamicString::operator=(const DynamicString& str2){
 	return *this;
 }
 
-DynamicString& operator=(const DynamicString&& str2){
+DynamicString& DynamicString::operator=(DynamicString&& str2){
 	delete str_ptr;
 	// Move data
 	str_ptr = str2.str_ptr;
@@ -150,9 +160,8 @@ DynamicString& operator=(const DynamicString&& str2){
 	cap = str2.cap;
 
 	// Clean up the initializer
-	str2.len = 0;
-	str2.cap = 0;
 	str2.str_ptr = nullptr;
+	str2.clear();
 	return *this;
 }
 

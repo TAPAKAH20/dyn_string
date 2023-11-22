@@ -20,7 +20,7 @@ public:
 	char operator[](size_t i) const;
 
 	DynamicString& operator=(const DynamicString& str2);
-	DynamicString& operator=(const DynamicString&& str2); // Move assignment
+	DynamicString& operator=(DynamicString&& str2); // Move assignment
 	DynamicString& operator=(const char* str2);
 
 	DynamicString operator+(const DynamicString& str2);
@@ -36,9 +36,12 @@ public:
 
 	size_t length() const;
 	size_t capacity() const;
+	bool empty() const;
+
 	char& at(size_t i);
 	char at(size_t i) const;
 
+	void clear();
 	void shrink_to_fit();
 	void resize_to_fit(size_t n);
 	void resize(size_t new_capacity);
