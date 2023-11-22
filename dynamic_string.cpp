@@ -9,101 +9,111 @@
 DynamicString::DynamicString(){
 	len = 0;
 	cap= 0;
-	str_ptr = nullptr;
+	str = nullptr;
 }
 
 
 // Copy first N
 DynamicString::DynamicString(const char* init_str, size_t n){
-	str_ptr = new char[n];
+	str = new char[n];
 	copy_n(init_str, n);
 	len = n;
-	cap= n;
+	cap = n;
 }
 
 //Find null character and copy chars
 DynamicString::DynamicString(const char* init_str){
 	size_t n = 0;
 	while(init_str[n] != '\x00') n++;
-	str_ptr = new char[n];
+	str = new char[n];
 	copy_n(init_str, n);
 	len = n;
-	cap= n;
+	cap = n;
 }
 
 // Copy constructor
 DynamicString::DynamicString(DynamicString& init_str){
 	len = init_str.length();
 	cap = init_str.capacity();
-	str_ptr = new char[cap];
+	str = new char[cap];
 	copy_n(init_str.string(), len);
 }
 
 // Move constructor
 DynamicString::DynamicString(DynamicString&& init_str){
-	delete str_ptr;
+	delete str;
 	// Move data
-	str_ptr = init_str.str_ptr;
+	str = init_str.str;
 	len = init_str.len;
 	cap = init_str.cap;
 
 	// Clean up the initializer
 	init_str.len = 0;
 	init_str.cap = 0;
-	init_str.str_ptr = nullptr;
+	init_str.str = nullptr;
 }
-
-
 
 // Destructor
 DynamicString::~DynamicString(){
-	delete str_ptr;
+	delete str;
 }
 
+
+
 //Utility functions
+
+// Copy leading n characters from c_string
 void DynamicString::copy_n(const char* str2, size_t n){
 	for(size_t i = 0; i<n; i++)
-		str_ptr[i] = str2[i];
+		str[i] = str2[i];
 }
 
 size_t DynamicString::find(char c) const{
 	for(size_t i=0; i<len; i++)
-		if (str_ptr[i] == c) return i;
+		if (str[i] == c) return i;
 	return -1;
 }
 
-bool DynamicString::empty() const{		return len==0;}
-size_t DynamicString::length() const{ 	return len; }
-size_t DynamicString::capacity() const{	return cap; }
-const char* DynamicString::string() const{return str_ptr; }
+// Get functions
+bool DynamicString::empty() const{			return len==0;}
+size_t DynamicString::length() const{ 		return len; }
+size_t DynamicString::capacity() const{		return cap; }
+const char* DynamicString::string() const{	return str; }
 
 char& DynamicString::at(size_t i){
 	if(i < len){
-		return str_ptr[i];
+		return str[i];
 	}else
 		throw std::out_of_range("Out of bounds accsses");
 }
 char DynamicString::at(size_t i) const{
 	if(i < len){
-		return str_ptr[i];
+		return str[i];
 	}else
 		throw std::out_of_range("Out of bounds accsses");
 }
 
+// Meve to a new location of size "new_capacity"
 void DynamicString::resize(size_t new_capacity){
 	if(new_capacity > max_cap) throw std::length_error("Maximum capacity exceeded.");
-	char* new_str_ptr = new char[new_capacity];
+
+	char* new_str = new char[new_capacity];
+
 	for(size_t i = 0; i<len && i<new_capacity; i++){
-		new_str_ptr[i] = str_ptr[i];
+		new_str[i] = str[i];
 	}
-	delete str_ptr;
-	str_ptr = new_str_ptr;
-	cap= new_capacity;
+
+	delete str;
+
+	// Update length and capacity
+	str = new_str;
+	cap = new_capacity;
 	len = (len < new_capacity) ? len : new_capacity;
 }
 
+
 void DynamicString::shrink_to_fit(){ resize(len);}
-// Double the capuntil enough to fit n
+// Double the cap until enough to fit n
 void DynamicString::resize_to_fit(size_t n){
 	if(n > max_cap) throw std::length_error("Maximum capacity exceeded.");
 	size_t new_cap = (cap == 0) ? 1 : cap;
@@ -113,7 +123,7 @@ void DynamicString::resize_to_fit(size_t n){
 }
 
 void DynamicString::clear(){
-	delete str_ptr;
+	delete str;
 	len = 0;
 	cap = 0;
 }
@@ -122,17 +132,19 @@ void DynamicString::clear(){
 // and 0 if both are equal
 int DynamicString::compare(const DynamicString& str2, bool ignore_case /*=false*/) const{
 	if(!ignore_case){
-		for(size_t i = 0; i < len && i < str2.length(); i++)
-			if(str_ptr[i] - str2[i] != 0){
-				return str_ptr[i] - str2[i];
+		for(size_t i = 0; i < len && i < str2.length(); i++){
+			if(str[i] - str2[i] != 0){
+				return str[i] - str2[i];
 			}
+		}
 		return len - str2.length();
 	}else{
-		for(size_t i = 0; i < len && i < str2.length(); i++)
-			if(std::tolower(str_ptr[i]) - std::tolower(str2[i]) != 0){
-				return std::tolower(str_ptr[i]) - std::tolower(str2[i]);
+		// if ignore_case == true, use lowercase
+		for(size_t i = 0; i < len && i < str2.length(); i++){
+			if(std::tolower(str[i]) - std::tolower(str2[i]) != 0){
+				return std::tolower(str[i]) - std::tolower(str2[i]);
 			}
-			
+		}
 		return len - str2.length();
 	}
 }
@@ -146,23 +158,27 @@ char DynamicString::operator[](size_t i) const{	return at(i); }
 char& DynamicString::operator[](size_t i){		return at(i); }
 
 // Assignment operators
+// Copy assignment
 DynamicString& DynamicString::operator=(const DynamicString& str2){
 	size_t length2 = str2.length();
+
 	resize_to_fit(length2);
 	copy_n(str2.string(), length2);
 	len = length2;
+
 	return *this;
 }
 
+// Move assignment
 DynamicString& DynamicString::operator=(DynamicString&& str2){
-	delete str_ptr;
+	delete str;
 	// Move data
-	str_ptr = str2.str_ptr;
+	str = str2.str;
 	len = str2.len;
 	cap = str2.cap;
 
 	// Clean up the initializer
-	str2.str_ptr = nullptr;
+	str2.str = nullptr;
 	str2.clear();
 	return *this;
 }
@@ -172,9 +188,10 @@ DynamicString& DynamicString::operator=(const char* str2){
 	size_t length2 = 0;
 	while(str2[length2] != '\x00') length2++;
 	
-	resize_to_fit(length2+1);
-	copy_n(str2, length2+1);
+	resize_to_fit(length2);
+	copy_n(str2, length2);
 	len = length2;
+
 	return *this;
 }
 
@@ -197,7 +214,6 @@ DynamicString DynamicString::operator+(const DynamicString& str2){
 // C strings concatination
 DynamicString DynamicString::operator+(const char* str2){
 	size_t length2 = 0;
-
 	while(str2[length2] != '\x00') length2++;
 
 	DynamicString res = DynamicString(*this);
@@ -213,7 +229,7 @@ DynamicString DynamicString::operator+(const char* str2){
 DynamicString& DynamicString::operator+=(const DynamicString& str2){
 	resize_to_fit(len + str2.length());
 	for(size_t i = 0; i<str2.length(); i++){
-		str_ptr[len + i] = str2[i];
+		str[len + i] = str2[i];
 	}
 	len += str2.length();
 	return *this;
@@ -221,20 +237,19 @@ DynamicString& DynamicString::operator+=(const DynamicString& str2){
 
 DynamicString& DynamicString::operator+=(const char* str2){
 	size_t length2 = 0;
-
 	while(str2[length2] != '\x00') length2++;
-	
 
 	resize_to_fit(len + length2);
 	for(size_t i = 0; i<length2; i++){
-		str_ptr[len + i] = str2[i];
+		str[len + i] = str2[i];
 	}
+
 	len += length2;
 	return *this;
 }
 DynamicString& DynamicString::operator+=(const char c){
 	resize_to_fit(len + 1);
-	str_ptr[len] = c;
+	str[len] = c;
 	len ++;
 	return *this;
 }
@@ -242,6 +257,6 @@ DynamicString& DynamicString::operator+=(const char c){
 
 // Stream operators
 std::ostream& operator<< (std::ostream& os, const DynamicString& str){
-	os << str.str_ptr;
+	os << str.str;
 	return os;
 }

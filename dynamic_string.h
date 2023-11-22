@@ -8,10 +8,10 @@ class DynamicString
 {
 public:
 	DynamicString();
-	DynamicString(const char* init_str_ptr);
-	DynamicString(const char* init_str_ptr, size_t n);
-	DynamicString(DynamicString& init_str_ptr); // Copy constructor
-	DynamicString(DynamicString&& init_str_ptr); // Move constructor
+	DynamicString(const char* init_str);
+	DynamicString(const char* init_str, size_t n);
+	DynamicString(DynamicString& init_str); // Copy constructor
+	DynamicString(DynamicString&& init_str); // Move constructor
 
 	~DynamicString();
 
@@ -59,7 +59,7 @@ private:
 	size_t len;
 	size_t cap;
 	const size_t max_cap = 4294967291; // 2^32
-	char* str_ptr;
+	char* str;
 
 	void copy_n(const char* str2, size_t n);
 };
